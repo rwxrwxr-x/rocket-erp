@@ -1,2 +1,9 @@
-# rocket-erm
-Система складского учета для "Rocket Manufacture"
+# Rocket-ERM
+
+**Система складского учета для "Rocket Manufacture"**
+
+---
+
+ ### [Техническое задание](docs/Specification.md)
+
+---
