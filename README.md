@@ -17,6 +17,10 @@
 ### Установка
 Чтобы развернуть проект локально, выполните следующие команды в консоли:
 ```shell
-git clone https://github.com/dimmy2000/rocket-erm.git
+git clone https://github.com/dimmy2000/rocket-erp.git
+cd rocket-erp
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+pre-commit install
 ```
