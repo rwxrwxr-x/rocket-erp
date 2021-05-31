@@ -13,7 +13,7 @@ repos:
         language: system
         types: [python]
         args: [
-            --line-length=200,
+            --line-length=78,
             --target-version=py37
             ]
 
@@ -34,7 +34,7 @@ repos:
         language: python
         types: [python]
         args: [
-            "--ignore=E203,W503,FI10,FI11,FI12,FI13,FI14,FI15,FI16,FI17,FI58,PT013",
+            "--ignore=E203,W503,FI10,FI11,FI12,FI13,FI14,FI15,FI16,FI17,FI58,PT013,D100,D104",
             # black
                 # E203 whitespace before ':'
                 # W503 line break before binary operator
@@ -50,7 +50,7 @@ repos:
                 # FI58 __future__ import "annotations" present
             # flake8-pytest-style
                 # PT013 found incorrect import of pytest, use simple 'import pytest' instead
-            "--max-line-length=110",
+            "--max-line-length=78",
             "--per-file-ignores=tests/*.py:S101"
             # S101 Use of assert detected
             ]

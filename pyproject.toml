@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "rocket-erp"
+version = "0.0.1"
+description = ""
+authors = ["dimmy2000, quanttyo"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^3.2.3"
+python-environ = "^0.4.54"
+django-environ = "^0.4.5"
+djangorestframework = "^3.12.4"
+djangorestframework-jwt = "^1.11.0"
+Pillow = "^8.2.0"
+flake8 = "^3.9.2"
+black = "^21.5b1"
+pre-commit = "^2.13.0"
+yesqa = "^1.2.3"
+reorder-python-imports = "^2.5.0"
+pyupgrade = "^2.19.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

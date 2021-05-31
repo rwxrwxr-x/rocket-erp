@@ -1,4 +1,4 @@
-# Rocket-ERM
+# Rocket-ERP
 
 **Система складского учета для "Rocket Manufacture"**
 
@@ -17,12 +17,25 @@
 [Диаграмма последовательности](docs/uml/rocket-erp-sequence-diagram.png)<br>
 
 ### Установка
+
+
+**Окружение**
 Чтобы развернуть проект локально, выполните следующие команды в консоли:
-```shell
+```bash
 git clone https://github.com/dimmy2000/rocket-erp.git
 cd rocket-erp
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-pre-commit install
+python3 -m pip install --user poetry
+poetry shell && poetry install && cp .env.template .env
 ```
+
+**Запуск сервера**
+
+Создаем БД: <code>python manage.py migrate</code>
+
+Создаём администратора: <code>python manage.py createsuperuser</code>
+
+Запускаем сервер: <code>python manage.py runserver</code>
+
+Сервер должен быть доступен по http://127.0.0.1:8000
+Админ-панель http://127.0.0.1:8000/admin
+
