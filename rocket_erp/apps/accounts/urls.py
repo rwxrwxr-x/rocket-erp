@@ -1,6 +1,9 @@
 from django.urls import path
 
-from .views import LogInView, LogOutView, MyProfile, MyProfileUpdate
+from .views import LogInView
+from .views import LogOutView
+from .views import MyProfile
+from .views import MyProfileUpdate
 
 app_name = "accounts"
 

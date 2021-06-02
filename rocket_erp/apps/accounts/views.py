@@ -1,5 +1,7 @@
 from django.conf import settings
-from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.shortcuts import redirect
@@ -9,9 +11,13 @@ from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import DetailView, FormView, UpdateView, View
+from django.views.generic import DetailView
+from django.views.generic import FormView
+from django.views.generic import UpdateView
+from django.views.generic import View
 
-from .forms import ProfileForm, SingInViaEmailForm
+from .forms import ProfileForm
+from .forms import SingInViaEmailForm
 from .models import Account
 from .utils import same_user
 

@@ -1,16 +1,14 @@
 from django import forms
 from django.conf import settings
-from django.forms import (
-    CharField,
-    EmailField,
-    EmailInput,
-    FileInput,
-    NumberInput,
-    PasswordInput,
-    Textarea,
-    TextInput,
-    ValidationError,
-)
+from django.forms import CharField
+from django.forms import EmailField
+from django.forms import EmailInput
+from django.forms import FileInput
+from django.forms import NumberInput
+from django.forms import PasswordInput
+from django.forms import Textarea
+from django.forms import TextInput
+from django.forms import ValidationError
 
 from .models import Account
 

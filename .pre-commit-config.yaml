@@ -45,11 +45,12 @@ repos:
         types: [python]
         args: [ "--py37-plus", "--py38-plus"]
 
--   repo: https://github.com/pycqa/isort
-    rev: 5.8.0
+-   repo: https://github.com/asottile/reorder_python_imports
+    rev: v2.5.0
     hooks:
-      - id: isort
-        name: isort (python)
+    -   id: reorder-python-imports
+        types: [python]
+        args: [--py37-plus]
 
 -   repo: local
     hooks:

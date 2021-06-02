@@ -1,12 +1,11 @@
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db.models import (
-    BooleanField,
-    CharField,
-    DateTimeField,
-    EmailField,
-    ImageField,
-    TextField,
-)
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
+from django.db.models import BooleanField
+from django.db.models import CharField
+from django.db.models import DateTimeField
+from django.db.models import EmailField
+from django.db.models import ImageField
+from django.db.models import TextField
 
 
 class UserManager(BaseUserManager):

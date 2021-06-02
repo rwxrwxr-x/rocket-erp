@@ -1,7 +1,8 @@
 import datetime
 import os
 
-from .env import env, root
+from .env import env
+from .env import root
 
 BASE_DIR = root()
 
