@@ -38,4 +38,3 @@ poetry shell && poetry install && cp .env.template .env
 
 Сервер должен быть доступен по http://127.0.0.1:8000
 Админ-панель http://127.0.0.1:8000/admin
-

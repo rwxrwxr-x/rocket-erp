@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %} Главная {% endblock title %}
+
+{% block content %}
+
+<div class="page-main">
+   <section class="page-main-projects page-container page-main-section page-main-section--gray">
+      <h2 class="page-main-section__subtitle">Текущие проекты</h2>
+
+      <div class="page-main-projects__wrapper">
+
+      </div>
+
+      <a href="#" class="page-main-projects__all link--after-row">Смотреть все</a>
+   </section>
+
+   <section class="page-main-stat page-container page-main-section">
+      <div class="page-main-stat-item">
+         <p class="page-main-stat-item__value"></p>
+         <p class="page-main-stat-item__description"></p>
+      </div>
+   </section>
+</div>
+
+{% endblock content %}
+
+{% block page_js %}
+    <script src="{% static 'js/bundle.js'%}"></script>
+{% endblock %}

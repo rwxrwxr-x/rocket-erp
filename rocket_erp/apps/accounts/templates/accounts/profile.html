@@ -1,0 +1,63 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+
+{% block page_title %}
+{{ user.email }}
+{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static '/accounts/css/style_accounts.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-user">
+  <div class="page-user-container">
+    <!-- profile block -->
+    <div class="page-user-profile page-user-profile_bottom">
+      <!-- photo -->
+      <div class="page-user-profile__img">
+          <img class="page-user-profile__img" src="/media/{% firstof user.avatar 'user-placeholder.svg' %}" alt="User profile picture">
+      </div>
+      <!-- info -->
+      <div class="page-user-profile__user-wrap">
+        <!-- skills and name -->
+        <h2 class="page-user-profile__title">
+            {{ user.first_name|default:'John' }} {{ user.last_name|default:'Dou' }}
+        </h2>
+
+
+        <!-- btn -->
+        <div class="page-user-btn">
+          <a href="{% url 'accounts:profileupdate' pk=user.pk%}" class="page-user-btn__edit">
+            Edit Profile
+          </a>
+          <a href="tg://resolve?domain={{ user.telegram|default:'' }}" class="page-user-btn__message">
+            <img src="{% static '/img/page-user/telegram.svg' %}" alt="" class="page-user-btn__message_telegram">
+            Send a message
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Projects  -->
+    <div class="page-user-projects ">
+      <!-- menu -->
+      <ul class="page-user-projects-menu">
+        <li class="page-user-projects-menu__item">
+          <a href="#" class="page-user-projects-menu__link page-user-projects-menu__link_active">
+            Текущие проекты
+          </a>
+        </li>
+        <li class="page-user-projects-menu__item">
+          <a href="#" class="page-user-projects-menu__link">
+            Завершенные проекты
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
