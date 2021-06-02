@@ -1,0 +1,62 @@
+    <header class="header">
+      <div class="header-left-burger" id="burger-btn">
+        <label class="burger-toggle"
+          ><input type="checkbox" />
+          <div>
+            <div><span></span> <span></span></div>
+            <svg><use xlink:href="#path"></use></svg> <svg><use xlink:href="#path"></use></svg></div
+        ></label>
+
+      </div>
+      <div class="header-left">
+        <nav class="header-left__nav nav">
+          <a class="header-left__nav-item item" href="/">Модуль1</a>
+          <a class="header-left__nav-item item" href="/">Модуль2</a>
+          <a class="header-left__nav-item item" href="/">Модуль3</a>
+          <a class="header-left__nav-item item" href="/">Модуль4</a>
+          <a class="header-left__nav-item item" href="/">Модуль5</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <nav class="header-right__nav">
+          <a class="header-right__nav-item item" href="/about">О проекте</a>
+          <a class="header-right__nav-item item" href="/">Коллеги</a>
+          <a class="header-right__nav-item item" href="/">Заказчики</a>
+        </nav>
+
+        <div class="header-right-btns">
+            <div class="header-right-btns__search">
+            <button
+              class="header-right-btns__search-btn header-right-btns__search-btn--action btn btn-small"
+              id="search-btn-action"
+            ></button>
+            <input
+              type="search"
+              class="header-right-btns__search-field search-field"
+              id="search-field"
+              placeholder="Поиск"
+            />
+            <button class="header-right-btns__close-btn btn btn-small" id="close-search-field"></button>
+          </div>
+          <button class="header-right-btns__more-btn btn btn--small" id="show-more"></button>
+          <button class="header-right-btns__search-btn btn btn-small" id="search-btn"></button>
+            {% if not user.is_authenticated %}
+
+            {% else %}
+          <img class="header-right-btns-avlogin" id="avlogin" src="/media/{% firstof user.avatar 'user-placeholder.svg' %}" />
+            {% endif %}
+        </div>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:login' %}" class="header-mobile-nav__signup-btn btn btn--green">Войти</a>
+        {% else %}
+        <nav class="header-right__avlogin">
+          <a class="header-right__avlogin-item item" href="{% url 'accounts:myprofile' pk=user.pk %}">Личный Кабинет</a>
+            {% if user.is_staff %}
+            <a class="header-right__avlogin-item item" href="/admin/">Админ. Панель</a>
+            {% endif %}
+          <div class="header-right__avlogin-item-sep item"></div>
+          <a class="header-right__avlogin-item item" href="{% url 'accounts:logout' %}">Выход</a>
+        </nav>
+          {% endif %}
+      </div>
+    </header>

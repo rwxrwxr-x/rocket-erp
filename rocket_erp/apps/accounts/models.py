@@ -1,21 +1,21 @@
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import BaseUserManager
-from django.db.models import BooleanField
-from django.db.models import CASCADE
-from django.db.models import CharField
-from django.db.models import DateTimeField
-from django.db.models import EmailField
-from django.db.models import ForeignKey
-from django.db.models import ImageField
-from django.db.models import Model
-from django.db.models import TextField
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db.models import (
+    BooleanField,
+    CharField,
+    DateTimeField,
+    EmailField,
+    ImageField,
+    TextField,
+)
 
 
 class UserManager(BaseUserManager):
+    """Define a model manager for User model with no username field."""
 
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
+        """Create and save any User with the given email and password."""
         if not email:
             raise ValueError("The given email must be set")
         email = self.normalize_email(email)
@@ -26,12 +26,14 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, email, password=None, **extra_fields):
+        """Create and save a regular User with given email and password."""
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
 
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        """Create and save a superuser with the given email and password."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -44,6 +46,7 @@ class UserManager(BaseUserManager):
 
 
 class Account(AbstractUser):
+    """Regular account model."""
 
     username = None
     email = EmailField("email address", unique=True)
@@ -58,15 +61,13 @@ class Account(AbstractUser):
         blank=True, verbose_name="surname", null=True, max_length=50
     )
 
-    about = TextField(
-        blank=True, verbose_name="description", null=True, max_length=350
-    )
+    about = TextField(blank=True, verbose_name="description", null=True,
+                      max_length=350)
 
     birthday = DateTimeField(null=True, blank=True, verbose_name="birthday")
 
-    phone = CharField(
-        max_length=11, null=True, blank=True, verbose_name="phone"
-    )
+    phone = CharField(max_length=11, null=True, blank=True,
+                      verbose_name="phone")
 
     is_deleted = BooleanField(default=False, verbose_name="deleted")
 
@@ -75,11 +76,5 @@ class Account(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
+        """Return str(self)."""
         return " ".join([self.first_name, self.last_name])
-
-
-class Activation(Model):
-    user = ForeignKey(Account, on_delete=CASCADE)
-    created_at = DateTimeField(auto_now_add=True)
-    code = CharField(max_length=20, unique=True)
-    email = EmailField(blank=True)

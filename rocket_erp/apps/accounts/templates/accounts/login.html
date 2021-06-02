@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% load static %}
+{% load bootstrap4 %}
+
+
+{% block page_title %}
+Login
+{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{% static 'accounts/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="page-login page-auth">
+    <div class="page-auth__content">
+        <div class="page-auth-selector">
+      <span class="page-auth-selector__item active">
+        Вход
+      </span>
+        </div>
+
+        <form method="POST" class="page-auth__auth-form">
+            {% csrf_token %}
+            <div class="input-field">
+                <input class="input input--height" type="text" name="email" required>
+                <label class="input__label">Email</label>
+                <span class="input__error"></span>
+            </div>
+
+            <div class="input-field">
+                <input class="input input--height" type="password" name="password" required>
+                <label class="input__label">Пароль</label>
+                <span class="input__error"></span>
+            </div>
+
+            <a href="auth-login-passreset.html" class="input__sub">Забыли пароль?</a>
+
+            <input type="submit" class="btn btn--green btn--big btn--width" value="Войти">
+
+            <div class="page-auth__error">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

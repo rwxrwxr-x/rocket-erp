@@ -1,8 +1,7 @@
 import datetime
 import os
 
-from .env import env
-from .env import root
+from .env import env, root
 
 BASE_DIR = root()
 
@@ -25,6 +24,7 @@ INSTALLED_APPS = [
     # third party apps
     "rest_framework",
     "rest_framework_jwt",
+    "bootstrap4",
     # apps
     "rocket_erp.apps.accounts",
     "rocket_erp.apps.api",
@@ -41,7 +41,9 @@ ROOT_URLCONF = "rocket_erp.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            "rocket_erp/templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,21 +70,26 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth."
+                "password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth."
+                "password_validation.MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth."
+                "password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth."
+                "password_validation.NumericPasswordValidator",
     },
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework."
+                                "pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": (
         #     'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -123,10 +130,18 @@ MEDIA_URL = "/media/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "media"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "rocket_erp", "static"),)
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
 ADMIN_MEDIA_PREFIX = "/static/admin/"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
+DISABLE_USERNAME = True
+LOGIN_VIA_EMAIL = True
+LOGIN_URL = "accounts:login"
+USE_REMEMBER_ME = True
+SIGN_UP_FIELDS = ["email", "password1", "password2"]
