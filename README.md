@@ -1,6 +1,6 @@
 # Rocket-ERP
 
-**Система складского учета для "Rocket Manufacture"**
+**Система складского учета**
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
@@ -15,11 +15,13 @@
 [Описание конечного продукта](docs/Specification.md)<br>
 [Схема взаимных связей объектов](docs/uml/rocket-erp-diagram.png)<br>
 [Диаграмма последовательности](docs/uml/rocket-erp-sequence-diagram.png)<br>
+[Диаграмма отношений базы данных](docs/uml/rocket-erp-db-relationship-diagram.png)<br>
 
 ### Установка
 
 
 **Окружение**
+
 Чтобы развернуть проект локально, выполните следующие команды в консоли:
 ```bash
 git clone https://github.com/dimmy2000/rocket-erp.git
