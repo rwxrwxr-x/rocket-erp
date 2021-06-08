@@ -20,14 +20,13 @@
     {% block page_styles %}
     {% endblock %}
 
-    {#% bootstrap_css %#}
-    {#% bootstrap_javascript jquery='full' %#}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
 
 </head>
 
 <body>
-{# Display django.contrib.messages as Bootstrap alerts #}
-{% bootstrap_messages %}
+{% include 'includes/messages.html' %}
     <!-- NAV -->
         {% include 'includes/nav.html' %}
     <!-- /NAV -->

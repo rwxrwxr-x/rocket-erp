@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import Callable
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -26,7 +27,7 @@ def send_mail(to, template, context):
     msg.send()
 
 
-def same_user(view_func):
+def same_user(view_func: Callable):
     """Decorate for restrict user access to profiles."""
     @wraps(view_func)
     def _wrapped_view(request, pk, *args, **kwargs):

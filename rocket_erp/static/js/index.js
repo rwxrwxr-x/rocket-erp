@@ -50,12 +50,12 @@ $(document).ready(function() {
   }
 
   // Плавтная прокрутка к якорю по клику
-  $('#aboutTocDest').on( 'click', 'a', function(){ 
+  $('#aboutTocDest').on( 'click', 'a', function(){
     const el = $(this)
     const dest = el.attr('href')
-    
+
     if(dest !== undefined && dest !== '' && /#\w/gi.test(dest)) {
-      $('html').animate({ 
+      $('html').animate({
         scrollTop: $(dest).offset().top - 100
       }, 500)
     }
@@ -72,7 +72,7 @@ $(document).ready(function() {
     aboutContentBlocks.each(function () {
       const top = $(this).offset().top - tocMenu.outerHeight() - offset
       const bottom = top + $(this).outerHeight() + offset;
-      
+
       if (position >= top && position <= bottom) {
         tocMenu.find('a').removeClass('active');
         tocMenu.find(`a[href="#${ $(this).attr('id') }"]`).addClass('active');

@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block title %} Проекты {% endblock title %}
+{% block page_styles %}
+<link rel="stylesheet" href="{% static '/css/projects.bundle.css' %}" />
+{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% for err in form.notfield_errors %}
+        <div class="alert alert-danger" role="alert">
+            <span>{{ err }}</span>
+        </div>
+    {% endfor %}
+    {% for field in form %}
+    <div>
+        <label for="{{ field.name }}">
+            {{ field.label }}
+        </label>
+        {{ field }}
+
+        {% for err in field.errors %}
+        <small class="">{{ err }}</small>
+        {% endfor %}
+
+    </div>
+    {% endfor %}
+    <div>
+        <button class="btn btn-danger" name="save" value="ok">Create</button>
+    </div>
+</form>
+
+{% endblock content %}

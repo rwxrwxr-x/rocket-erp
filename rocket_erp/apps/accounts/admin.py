@@ -1,9 +1,14 @@
 """Integrate with django.contrib.admin module."""
+from typing import Any
+from typing import Type
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.forms import BaseModelForm
+from django.http import HttpRequest
 
 from .models import Account
 
@@ -14,7 +19,8 @@ admin.site.unregister(Group)
 class UserAdmin(DjangoUserAdmin):
     """Define admin model for User model with no email field."""
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_form(self, request: HttpRequest, obj: Any = None, **kwargs) -> \
+            BaseModelForm:
         """Permissions introduction, TO DO."""
         if request.user.is_superuser:
             self.fieldsets += ((None, {"fields": ("email", "password")}),)
@@ -23,7 +29,7 @@ class UserAdmin(DjangoUserAdmin):
             self.fieldsets += ((None, {"fields": ("email", "password")}),)
             return super().get_form(request, obj, **kwargs)
 
-    fieldsets = (
+    fieldsets: tuple = (
         (
             "Personal info",
             {
@@ -53,7 +59,7 @@ class UserAdmin(DjangoUserAdmin):
         ),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
-    add_fieldsets = (
+    add_fieldsets: tuple = (
         (
             None,
             {
@@ -62,7 +68,7 @@ class UserAdmin(DjangoUserAdmin):
         ),
     )
 
-    list_display = (
+    list_display: tuple = (
         "email",
         "pk",
         "first_name",
@@ -82,7 +88,7 @@ class GroupsAdmin(admin.ModelAdmin):
     list_display = ["name", "pk"]
 
     class Meta:
-        model = Group
+        model: Type[Group] = Group
 
 
 @admin.register(Permission)
@@ -92,7 +98,7 @@ class PermissionAdmin(admin.ModelAdmin):
     list_display = ["name", "content_type"]
 
     class Meta:
-        model = Permission
+        model: Type[Permission] = Permission
 
 
 @admin.register(ContentType)
@@ -100,4 +106,4 @@ class ContentTypeAdmin(admin.ModelAdmin):
     """Overriding a ContentType admin model."""
 
     class Meta:
-        model = ContentType
+        model: Type[ContentType] = ContentType
