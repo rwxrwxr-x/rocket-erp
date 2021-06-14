@@ -2,17 +2,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.db.models import QuerySet
-from django.forms import forms
-from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.detail import DetailView
 
+from ..core.views import TemplateView
 from .forms import ProjectCreate
+from .forms import ProjectDocsCreate
+from .forms import ProjectUpdate
 from .models import Project
+from .models import ProjectDocs
 
 
-class ProjectListView(LoginRequiredMixin, ListView): # noqa
+class ProjectListView(LoginRequiredMixin, ListView):  # noqa
     model = Project
     template_name = 'projects/projects_list.html'
     context_object_name = 'projects'
@@ -31,14 +33,29 @@ class ProjectListView(LoginRequiredMixin, ListView): # noqa
         return projects
 
 
-class ProjectCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView): # noqa
+class ProjectItemView(LoginRequiredMixin, DetailView): # noqa
+    template_name = 'projects/projects_item.html'
     model = Project
-    template_name = 'projects/projects_create.html'
-    form_class = ProjectCreate
     context_object_name = 'projects'
-    success_url = reverse_lazy('projects_list')
-    success_message = '%(title) создан'
 
-    def form_valid(self, form: forms) -> HttpResponse:
-        """If the form is valid, save object of model."""
-        return super().form_valid(form)
+
+class ProjectUpdateView(LoginRequiredMixin, SuccessMessageMixin, # noqa
+                        TemplateView):
+    template_name = 'projects/projects_edit.html'
+    model = Project
+    minor_models = ProjectDocs
+    form_class = ProjectUpdate
+    minor_form_classes = ProjectDocsCreate
+    view_alias = 'project_update'
+    success_message = "%(title)s was updated successfully"
+
+
+class ProjectCreateView(LoginRequiredMixin, SuccessMessageMixin, # noqa
+                        TemplateView):
+    template_name = 'projects/projects_edit.html'
+    model = Project
+    minor_models = ProjectDocs
+    form_class = ProjectCreate
+    minor_form_classes = ProjectDocsCreate
+    success_redirect = reverse_lazy('projects_list')
+    success_message = "%(title)s was created successfully"
