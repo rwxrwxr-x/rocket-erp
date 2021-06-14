@@ -10,7 +10,7 @@
       </div>
       <div class="header-left">
         <nav class="header-left__nav nav">
-          <a class="header-left__nav-item item" href="/">Модуль1</a>
+          <a class="header-left__nav-item item" href="{% url "projects_list" %}">Проекты</a>
           <a class="header-left__nav-item item" href="/">Модуль2</a>
           <a class="header-left__nav-item item" href="/">Модуль3</a>
           <a class="header-left__nav-item item" href="/">Модуль4</a>
@@ -19,7 +19,7 @@
       </div>
       <div class="header-right">
         <nav class="header-right__nav">
-          <a class="header-right__nav-item item" href="/about">О проекте</a>
+          <a class="header-right__nav-item item" href="{% url "about" %}">О проекте</a>
           <a class="header-right__nav-item item" href="/">Коллеги</a>
           <a class="header-right__nav-item item" href="/">Заказчики</a>
         </nav>
@@ -52,7 +52,7 @@
         <nav class="header-right__avlogin">
           <a class="header-right__avlogin-item item" href="{% url 'accounts:myprofile' pk=user.pk %}">Личный Кабинет</a>
             {% if user.is_staff %}
-            <a class="header-right__avlogin-item item" href="/admin/">Админ. Панель</a>
+            <a class="header-right__avlogin-item item" href="{% url 'admin:index' %}">Админ. Панель</a>
             {% endif %}
           <div class="header-right__avlogin-item-sep item"></div>
           <a class="header-right__avlogin-item item" href="{% url 'accounts:logout' %}">Выход</a>

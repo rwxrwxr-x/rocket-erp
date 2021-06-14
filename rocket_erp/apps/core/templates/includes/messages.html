@@ -1,0 +1,30 @@
+{% load i18n bootstrap4 %}
+<style>
+    body { margin-top:30px; }
+hr.message-inner-separator
+{
+    clear: both;
+    margin-top: 10px;
+    margin-bottom: 13px;
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
+    background-image: -moz-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+    background-image: -ms-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+    background-image: -o-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
+}
+</style>
+
+
+{% for message in messages %}
+ <div class="col-sm-6 col-md-6">
+    <div class="alert {{ message|bootstrap_message_classes }}">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            X</button>
+       <span class="glyphicon glyphicon-ok"></span> <strong>{{ message.extra_tags|capfirst }}</strong>
+        <hr class="message-inner-separator">
+        <p>
+            {{ message }}</p>
+    </div>
+</div>
+{% endfor %}

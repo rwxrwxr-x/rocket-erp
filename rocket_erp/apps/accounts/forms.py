@@ -22,7 +22,7 @@ class SingIn(UserCacheMixin, forms.Form):
 
     password = CharField(label="Password", strip=False, widget=PasswordInput)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Auth model constructor."""
         super().__init__(*args, **kwargs)
 
@@ -31,7 +31,7 @@ class SingIn(UserCacheMixin, forms.Form):
                 label="Remember me", required=False
             )
 
-    def clean_password(self):
+    def clean_password(self) -> str:
         """Check password for correctness."""
         password = self.cleaned_data["password"]
 
@@ -50,17 +50,17 @@ class SingInViaEmailForm(SingIn):
     email = EmailField(label="Email")
 
     @property
-    def field_order(self):
+    def field_order(self) -> list:
         """Auth fields, by settings.USE_REMEMBER_ME."""
         if settings.USE_REMEMBER_ME:
             return ["email", "password", "remember_me"]
         return ["email", "password"]
 
-    def clean_email(self):
+    def clean_email(self) -> str:
         """Clean check of email."""
         email = self.cleaned_data["email"]
 
-        user = Account.objects.filter(email__iexact=email).first()
+        user: Account = Account.objects.filter(email__iexact=email).first()
 
         if not user:
             raise ValidationError("Wrong email")
@@ -68,7 +68,7 @@ class SingInViaEmailForm(SingIn):
         if not user.is_active:
             raise ValidationError("This acc not activated")
 
-        self.user_cache = user
+        self.user_cache: None = user
 
         return email
 

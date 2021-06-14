@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 
@@ -14,5 +15,5 @@ class AccountViewSet(ModelViewSet):
     """Api account view."""
 
     serializer_class = None
-    queryset = Account.objects.all()
+    queryset: QuerySet[Account] = Account.objects.all()
     pagination_class = LargeResultsSetPagination

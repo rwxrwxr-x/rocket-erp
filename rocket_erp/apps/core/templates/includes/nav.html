@@ -4,14 +4,14 @@
         <button class="header-mobile-nav__close-btn btn btn-small" id="close-mobile-nav"></button>
       </div>
       <nav class="header-mobile-nav__nav">
-        <a class="header-mobile-nav__nav-item item" href="/"><b>Модуль2222</b></a>
+        <a class="header-mobile-nav__nav-item item" href="{% url "projects_list" %}"><b>Проекты</b></a>
         <a class="header-mobile-nav__nav-item item" href="/"><b>Модуль2</b></a>
         <a class="header-mobile-nav__nav-item item" href="/"><b>Модуль3</b></a>
         <a class="header-mobile-nav__nav-item item" href="/"><b>Модуль4</b></a>
         <a class="header-mobile-nav__nav-item item" href="/"><b>Модуль5</b></a>
       </nav>
       <nav class="header-mobile-nav__nav">
-        <a class="header-mobile-nav__nav-item item" href="/about">О проекте</a>
+        <a class="header-mobile-nav__nav-item item" href="{% url "about" %}">О проекте</a>
         <a class="header-mobile-nav__nav-item item" href="/">Коллеги</a>
         <a class="header-mobile-nav__nav-item item" href="/">Заказчики</a>
       </nav>
@@ -23,7 +23,7 @@
         <img class="header-mobile-nav__avlogin" src="/media/{% firstof user.avatar 'user-placeholder.svg' %}" />
         <a class="header-mobile-nav__nav-item item" href="{% url 'accounts:myprofile' pk=user.pk %}">Личный Кабинет</a>
           {% if user.is_staff %}
-          <a class="header-mobile-nav__nav-item item" href="/admin/">Админ. Панель</a>
+          <a class="header-mobile-nav__nav-item item" href="{% url 'admin:index' %}">Админ. Панель</a>
           {% endif %}
         <a href="{% url 'accounts:logout' %}" class="header-mobile-nav__signup-btn btn btn--green">Выйти</a>
 

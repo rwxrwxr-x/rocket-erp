@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main(): # noqa
+def main() -> None: # noqa
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rocket_erp.settings")
     try:
         from django.core.management import execute_from_command_line

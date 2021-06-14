@@ -1,0 +1,32 @@
+{% load bootstrap4 %}
+{% if widget.is_initial %}<a href="{{ widget.value.url }}">{{ widget.value }}</a><br>
+{% endif %}
+<div class="input-group">
+    <div id="input-block" class="custom-file">
+    <input type="{{ widget.type }}" id="file" class="custom-file-input" name="{{ widget.name }}"
+           {% if widget.attrs.multiple %}multiple{% endif %}>
+    <label id="lb-{{ widget.name }}" class="custom-file-label" for="customFile">Choose file...</label>
+    </div>
+    <div class="input-group-append">
+<button id="clear" type="button" class="btn btn-outline-secondary">Clear</button>
+</div>
+</div>
+<script type="application/javascript">
+
+    let input_block = $('#input-block'),
+        clear_btn = $('#clear');
+
+    input_block.children('input').change(function (e) {
+        let files = [];
+        for (let i = 0; i < $(this)[0].files.length; i++) {
+            files.push($(this)[0].files[i].name);
+        }
+        $(this).next('.custom-file-label').html(files.join(', '));
+    });
+    clear_btn.on('click', function(){
+        input_block.replaceWith(input_block.val('').clone(true));
+        $('.custom-file-label').html('Choose file...')
+    })
+
+
+</script>

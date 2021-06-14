@@ -1,9 +1,18 @@
+from typing import Optional
+from typing import Type
+from typing import Union
+
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView as BaseLogoutView
+from django.forms import Form
+from django.http import HttpRequest
+from django.http import HttpResponse
+from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -25,7 +34,8 @@ from .utils import same_user
 class GuestOnlyView(View):
     """Guest only access for view."""
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args, **kwargs)\
+            -> Union[HttpResponseNotAllowed, HttpResponseRedirect]:
         """Override of View dispatch method."""
         if request.user.is_authenticated:
             return redirect(settings.LOGIN_REDIRECT_URL)
@@ -39,22 +49,27 @@ class LogInView(GuestOnlyView, FormView):
     template_name = "accounts/login.html"
 
     @staticmethod
-    def get_form_class(**kwargs):
-        """Sing in with email form."""
+    def get_form_class(**kwargs) -> Optional[Type[SingInViaEmailForm]]:
+        """
+        Sing in with email form.
+
+        :return: SignIn
+        """
         if settings.LOGIN_VIA_EMAIL:
             return SingInViaEmailForm
 
     @method_decorator(sensitive_post_parameters("password"))
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request: HttpRequest, *args, **kwargs)\
+            -> Union[HttpResponseNotAllowed, HttpResponseRedirect]:
         """Override of View dispatch method."""
         request.session.set_test_cookie()
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form) -> HttpResponseRedirect:
         """Override of View form_valid method."""
-        request = self.request
+        request: HttpRequest = self.request
 
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
@@ -84,7 +99,7 @@ class LogOutView(BaseLogoutView):
 
     next_page = "home"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Override of basic get method."""
         logout(request)
         return super().get(request, *args, **kwargs)
@@ -99,7 +114,7 @@ class MyProfile(LoginRequiredMixin, DetailView):
     form_class = ProfileForm
     success_url = reverse_lazy("accounts:myprofile")
 
-    def get_success_url(self):
+    def get_success_url(self) -> HttpResponseRedirect:
         """Redirect with current user id."""
         return reverse_lazy("accounts:myprofile",
                             kwargs={"pk": self.object.pk})
@@ -114,7 +129,7 @@ class MyProfileUpdate(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
     success_url = reverse_lazy("accounts:profileupdate")
 
-    def get_success_url(self):
+    def get_success_url(self) -> HttpResponseRedirect:
         """Redirect with current user id."""
         return reverse_lazy("accounts:profileupdate",
                             kwargs={"pk": self.object.pk})

@@ -1,11 +1,14 @@
 import datetime
 import os
 
+from django.contrib.messages import constants as messages
+
 from .env import env
 from .env import root
+from .env import settings
 
 BASE_DIR = root()
-
+SETTINGS = settings()
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -13,6 +16,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 AUTH_USER_MODEL = "accounts.Account"
+
 
 INSTALLED_APPS = [
     # core apps
@@ -27,14 +31,18 @@ INSTALLED_APPS = [
     "rest_framework_jwt",
     "bootstrap4",
     # apps
+    "rocket_erp.apps.core",
     "rocket_erp.apps.accounts",
     "rocket_erp.apps.api",
+    "rocket_erp.apps.projects"
 ]
 
 MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    # 3d party apps
+    "crum.CurrentRequestUserMiddleware"
 ]
 
 ROOT_URLCONF = "rocket_erp.urls"
@@ -43,7 +51,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            "rocket_erp/templates",
+            os.path.join(SETTINGS, 'templates')
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -57,6 +65,13 @@ TEMPLATES = [
     },
 ]
 
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger'
+}
 WSGI_APPLICATION = "rocket_erp.wsgi.app"
 
 DATABASES = {

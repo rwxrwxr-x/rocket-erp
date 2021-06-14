@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
 from django.db.models import BooleanField
@@ -13,25 +17,28 @@ class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
+    def _create_user(self, email: str = "", password: str = "",
+                     **extra_fields) -> UserManager:
         """Create and save any User with the given email and password."""
         if not email:
             raise ValueError("The given email must be set")
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user: Account = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email: str, password: str = None, **extra_fields)\
+            -> type[BaseUserManager]:
         """Create and save a regular User with given email and password."""
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
 
         return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email: str, password: str, **extra_fields)\
+            -> UserManager:
         """Create and save a superuser with the given email and password."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -47,10 +54,10 @@ class UserManager(BaseUserManager):
 class Account(AbstractUser):
     """Regular account model."""
 
-    username = None
+    username: None = None
     email = EmailField("email address", unique=True)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: list = []
 
     avatar = ImageField(
         upload_to="avatars/", blank=True, null=True, verbose_name="avatar"
@@ -72,8 +79,8 @@ class Account(AbstractUser):
 
     updated = DateTimeField(auto_now=True, verbose_name="updated")
 
-    objects = UserManager()
+    objects: UserManager[Any] = UserManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return str(self)."""
         return " ".join([self.first_name, self.last_name])
