@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% load static %}
 {% load bootstrap4 %}
-
+{% load i18n %}
 {% block title %} Проекты {% endblock title %}
 {% block page_styles %}
 <link rel="stylesheet" href="{% static '/css/projects.bundle.css' %}" />
@@ -78,12 +78,12 @@
             {% for project in projects %}
 
             <div class="page-list-content-wrapper-conteiner-row-col">
-              <div class="page-list-content-wrapper-conteiner-row-col-imgconteiner">
-                <img class="page-list-content-wrapper-conteiner-row-col-imgconteiner-img" src="/media/{{ project.image }}">
-              </div>
+{#              <div class="page-list-content-wrapper-conteiner-row-col-imgconteiner">#}
+{#                <img class="page-list-content-wrapper-conteiner-row-col-imgconteiner-img" src="/media/{{ project.image }}">#}
+{#              </div>#}
               <div class="page-list-content-wrapper-conteiner-row-col-inside" style="margin: 0;">
                 <h4 class="page-list-content-wrapper-conteiner-row-col-inside__h4" style="margin: 0;">
-                  {{ project.title }}
+                    <a href="{{ project.pk }}">{{ project.title }}</a>
                 </h4>
                 <p class="page-list-content-wrapper-conteiner-row-col-inside-description" style="margin: 0;">
                   {{ project.description_brief }}
@@ -95,7 +95,7 @@
           </div>
 
           <div class="page-list-content-wrapper-conteiner-row-download">
-            <a class="page-list-content-wrapper-conteiner-row-download-btn" href="{% url "projects_create" %}">Создать проект</a>
+            <a class="page-list-content-wrapper-conteiner-row-download-btn" href="{% url "project_create" %}">Создать проект</a>
           </div>
         </div>
     </section>

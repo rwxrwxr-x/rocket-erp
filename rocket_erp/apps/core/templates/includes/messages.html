@@ -20,8 +20,8 @@ hr.message-inner-separator
  <div class="col-sm-6 col-md-6">
     <div class="alert {{ message|bootstrap_message_classes }}">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-            ×</button>
-       <span class="glyphicon glyphicon-ok"></span> <strong>Success Message</strong>
+            X</button>
+       <span class="glyphicon glyphicon-ok"></span> <strong>{{ message.extra_tags|capfirst }}</strong>
         <hr class="message-inner-separator">
         <p>
             {{ message }}</p>

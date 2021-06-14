@@ -7,29 +7,21 @@
 <link rel="stylesheet" href="{% static '/css/projects.bundle.css' %}" />
 {% endblock %}
 
+<body>
 {% block content %}
 <form method="POST" enctype="multipart/form-data">
-    {% for err in form.notfield_errors %}
-        <div class="alert alert-danger" role="alert">
-            <span>{{ err }}</span>
-        </div>
-    {% endfor %}
     {% for field in form %}
     <div>
         <label for="{{ field.name }}">
             {{ field.label }}
         </label>
         {{ field }}
-
-        {% for err in field.errors %}
-        <small class="">{{ err }}</small>
-        {% endfor %}
-
     </div>
     {% endfor %}
+    {{ attach }}
     <div>
-        <button class="btn btn-danger" name="save" value="ok">Create</button>
+        <button class="btn btn-danger" name="save" value="ok">{% if project.pk %}Update{% else %}Create{% endif %}</button>
     </div>
 </form>
-
+    </body>
 {% endblock content %}

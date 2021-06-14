@@ -5,9 +5,10 @@ from django.contrib.messages import constants as messages
 
 from .env import env
 from .env import root
+from .env import settings
 
 BASE_DIR = root()
-
+SETTINGS = settings()
 
 SECRET_KEY = env("SECRET_KEY")
 
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     "rest_framework_jwt",
     "bootstrap4",
     # apps
+    "rocket_erp.apps.core",
     "rocket_erp.apps.accounts",
     "rocket_erp.apps.api",
     "rocket_erp.apps.projects"
@@ -49,7 +51,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            "rocket_erp/templates",
+            os.path.join(SETTINGS, 'templates')
         ],
         "APP_DIRS": True,
         "OPTIONS": {

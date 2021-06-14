@@ -1,10 +1,14 @@
+import os
 from typing import Union
 
 from crum import get_current_user
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.urls import reverse
 
 from ..accounts.models import Account
+
+allowed_extensions = ['png']
 
 
 class TimeStampedModel(models.Model):
@@ -59,11 +63,6 @@ class Project(TimeStampedModel):
         default=None,
         verbose_name='Редактировал'
     )
-    file = models.FileField(
-        upload_to='projects/uploads',
-        blank=True,
-        verbose_name='docs'
-    )
     curators = models.ManyToManyField(
         Account,
         blank=True,
@@ -75,7 +74,7 @@ class Project(TimeStampedModel):
         verbose_name = 'project'
         verbose_name_plural = 'projects'
 
-    def __str__(self): # noqa
+    def __str__(self):  # noqa
         return self.title
 
     def absolute_url(self) -> Union[str, str]:
@@ -91,3 +90,33 @@ class Project(TimeStampedModel):
             self.creator = user
         self.modified_by = user
         super().save(*args, **kwargs)
+
+
+class ProjectDocs(models.Model):
+    """Project file attachments model."""
+
+    file = models.FileField(upload_to='projects/upload',
+                            validators=[
+                                FileExtensionValidator(
+                                    allowed_extensions,
+                                    message=f'Allowed: '
+                                            f'{str(allowed_extensions)}')],
+                            null=True,
+                            blank=True)
+    project = models.ForeignKey(Project,
+                                on_delete=models.CASCADE,
+                                related_name='files')
+
+    @property
+    def filename(self):
+        """Get filename of attachment."""
+        return os.path.basename(self.file.name)
+
+    @property
+    def url(self):
+        """Get url of current item."""
+        return self.file.url
+
+    def __str__(self):
+        """Repr."""
+        return f'{self.project}, {self.filename.title()}'
