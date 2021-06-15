@@ -121,26 +121,35 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
         """
         self.object = self.get_object()
         forms: list[Form] = [self.get_form()]
-        forms[1:] = list(map(lambda form, model:
-                             form(instance=model(self.object),
-                                  data=self.request.POST)
-                             if model not in self.file_attrs.keys() else
-                             form(instance=model(self.object),
-                                  files=self.request.FILES),
-                             self.minor_form_classes,
-                             self.minor_models))
-
-        if map(lambda x: x.is_valid(), forms):
+        forms[1:] = list(map(
+            lambda _form, _model:
+            _form(**{'instance': _model(self.object)},
+                  **{'data': self.request.POST}
+                  if _model not in self.file_attrs.keys()
+                  else {'files': self.request.FILES}),
+            self.minor_form_classes,
+            self.minor_models
+        ))
+        if False not in list(map(lambda x: x.is_valid(), forms)):
             return self.form_valid(forms)
         else:
-            return self.form_invalid(forms[0])
+            messages.error(request, 'Form error', extra_tags='Err')
+            return self.form_invalid(forms)
 
-    def form_valid(self, forms) -> HttpResponseRedirect:
+    def form_invalid(self, forms: list[Form]) -> TemplateResponse:
+        """If the forms invalid, render invalid form."""
+        context = {'files': forms[0]}
+        context.update(zip(list(map(lambda x: x.__name__.lower(),
+                                    self.minor_models)),
+                           forms[1:]))
+        return self.render_to_response(self.get_context_data(**context))
+
+    def form_valid(self, forms: list[Form]) -> HttpResponseRedirect:
         """If form is valid, saving the associated models."""
         self.object = forms[0].save()
 
-        for x in forms[1:]:
-            instance: object = x.instance
+        for form in forms[1:]:
+            instance: object = form.instance
             if get_model(instance) in self.file_attrs.keys():
                 self.file_attrs[get_model(instance)]['action']([
                     get_model(instance)(
@@ -151,16 +160,18 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
                 ])
                 continue
             setattr(instance, get_fk_by_instance(instance), self.object.pk)
-        self.send_success_message(forms[0])
-        return super(ModelFormMixin, self).form_valid(forms[0])
+            form.save()
 
-    def send_success_message(self, form) -> None:
+        self.send_success_message(forms[0])
+        return HttpResponseRedirect(self.get_success_url())
+
+    def send_success_message(self, form: Form) -> None:
         """Add success message to contrib.messages."""
         success_message: str = self.get_success_message(form.cleaned_data)
         if success_message:
             messages.success(self.request, success_message)
 
-    def get_success_message(self, cleaned_data) -> str:
+    def get_success_message(self, cleaned_data: dict[str, str]) -> str:
         """Get the success message."""
         return self.success_message % cleaned_data
 
@@ -168,8 +179,8 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
         """Insert forms(form_class, minor_forms) into context dict."""
         context: dict = dict()
         context['form'] = self.get_form()
-        for x in self.minor_form_classes:
-            context[x.__name__.lower()] = x
+        for model, form in zip(self.minor_models, self.minor_form_classes):
+            context[model.__name__.lower()] = form
         if self.object:
             context['object'] = self.object
             context_object_name = self.get_context_object_name(self.object)
