@@ -18,6 +18,9 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from django.views.generic.edit import FormMixin
 from django.views.generic.edit import ModelFormMixin
 
+from ..core.utils import get_fk_by_instance
+from ..core.utils import get_model
+
 
 def home_page(request: HttpRequest) -> HttpResponse:
     """Home page view."""
@@ -54,7 +57,7 @@ def handler403(request: HttpRequest, *args, **kwargs) -> HttpResponse:
     return error(request, 403, "Not accessed", *args, **kwargs)
 
 
-def handler500(request: HttpRequest, *args, **kwargs) -> HttpResponse: # noqa
+def handler500(request: HttpRequest, *args, **kwargs) -> HttpResponse:  # noqa
     return error(request, 500, 'Server error', *args, **kwargs)
 
 
@@ -64,18 +67,31 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
     TemplateView for making views with create/update actions with minor model.
 
     Action depends on pk variable of model.
+    - **attributes**::
+        :str template_name: path to template file
+        :ModelForm form_class: main form
+        :Model model: main model
+        :tuple minor_models: minor models, with fk to main model
+        :minor_form_classes: forms
+        :prefix: str: forms prefix
+        :object: Type[model]: current object of main model
+        :success_redirect:
+        :success_message:
+        :view_alias:
+        :file_attrs: attributes for file-input
     """
 
     template_name: str = ''
     form_class: Type[ModelForm] = None
     model: Type[Model] = None
-    minor_models = None
-    minor_form_classes = None
+    minor_models: tuple[Model] = None
+    minor_form_classes: tuple[ModelForm] = None
     prefix: str = 'form_'
     object: Type[model] = None
     success_redirect: str = '#'
-    view_alias: str = ''
-    _data = None
+    success_message: str = ''
+    success_view_alias: str = ''
+    file_attrs: dict[dict[str, Any]] = None
 
     def get_object(self, queryset=None):
         """
@@ -104,34 +120,56 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
         variables and then check if it's valid.
         """
         self.object = self.get_object()
-        form: Form = self.get_form()
-        file_form: Form = self.minor_form_classes(
-            instance=self.minor_models(),
-            files=self.request.FILES)
-        form.errors.update(file_form.errors)
-        if form.is_valid() and file_form.is_valid():
-            return self.form_valid(form)
-        else:
-            messages.error(request,
-                           next(iter(file_form.errors.values())),
-                           extra_tags='Error message')
-            return self.form_invalid(form)
+        forms: list[Form] = [self.get_form()]
+        forms[1:] = list(map(lambda form, model:
+                             form(instance=model(self.object),
+                                  data=self.request.POST)
+                             if model not in self.file_attrs.keys() else
+                             form(instance=model(self.object),
+                                  files=self.request.FILES),
+                             self.minor_form_classes,
+                             self.minor_models))
 
-    def form_valid(self, form) -> HttpResponseRedirect:
+        if map(lambda x: x.is_valid(), forms):
+            return self.form_valid(forms)
+        else:
+            return self.form_invalid(forms[0])
+
+    def form_valid(self, forms) -> HttpResponseRedirect:
         """If form is valid, saving the associated models."""
-        self.object = form.save()
-        files = self.request.FILES.getlist('file')
-        self.minor_models.objects.bulk_create([
-            self.minor_models(file=file, project=self.object) for
-            file in files
-        ])
-        return super(ModelFormMixin, self).form_valid(form)
+        self.object = forms[0].save()
+
+        for x in forms[1:]:
+            instance: object = x.instance
+            if get_model(instance) in self.file_attrs.keys():
+                self.file_attrs[get_model(instance)]['action']([
+                    get_model(instance)(
+                        **{get_fk_by_instance(instance): self.object.pk,
+                           self.file_attrs[get_model(instance)][
+                               'field']: file})
+                    for file in self.request.FILES.getlist('file')
+                ])
+                continue
+            setattr(instance, get_fk_by_instance(instance), self.object.pk)
+        self.send_success_message(forms[0])
+        return super(ModelFormMixin, self).form_valid(forms[0])
+
+    def send_success_message(self, form) -> None:
+        """Add success message to contrib.messages."""
+        success_message: str = self.get_success_message(form.cleaned_data)
+        if success_message:
+            messages.success(self.request, success_message)
+
+    def get_success_message(self, cleaned_data) -> str:
+        """Get the success message."""
+        return self.success_message % cleaned_data
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        """Insert forms(form_class, file_form_class) into context dict."""
+        """Insert forms(form_class, minor_forms) into context dict."""
         context: dict = dict()
         context['form'] = self.get_form()
-        context['attach'] = self.minor_form_classes
+        for x in self.minor_form_classes:
+            context[x.__name__.lower()] = x
         if self.object:
             context['object'] = self.object
             context_object_name = self.get_context_object_name(self.object)
@@ -142,8 +180,8 @@ class TemplateView(FormView, SingleObjectTemplateResponseMixin,
 
     def get_success_url(self) -> Union[HttpResponseRedirect, str]:
         """Return the URL to redirect to after processing a valid form."""
-        if self.view_alias and self.object:
-            return reverse_lazy(self.view_alias,
+        if self.success_view_alias and self.object:
+            return reverse_lazy(self.success_view_alias,
                                 kwargs={'pk': self.object.pk})
         else:
             return self.success_redirect

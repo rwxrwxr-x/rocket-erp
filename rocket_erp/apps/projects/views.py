@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.db.models import QuerySet
 from django.urls import reverse_lazy
@@ -33,29 +32,33 @@ class ProjectListView(LoginRequiredMixin, ListView):  # noqa
         return projects
 
 
-class ProjectItemView(LoginRequiredMixin, DetailView): # noqa
+class ProjectItemView(LoginRequiredMixin, DetailView):  # noqa
     template_name = 'projects/projects_item.html'
     model = Project
     context_object_name = 'projects'
 
 
-class ProjectUpdateView(LoginRequiredMixin, SuccessMessageMixin, # noqa
+class ProjectUpdateView(LoginRequiredMixin,  # noqa
                         TemplateView):
     template_name = 'projects/projects_edit.html'
     model = Project
-    minor_models = ProjectDocs
+    minor_models = (ProjectDocs,)
     form_class = ProjectUpdate
-    minor_form_classes = ProjectDocsCreate
-    view_alias = 'project_update'
+    minor_form_classes = (ProjectDocsCreate,)
+    success_view_alias = 'project_update'
     success_message = "%(title)s was updated successfully"
+    file_attrs = {ProjectDocs: {'action': ProjectDocs.objects.bulk_create,
+                                'field': 'file'}}
 
 
-class ProjectCreateView(LoginRequiredMixin, SuccessMessageMixin, # noqa
+class ProjectCreateView(LoginRequiredMixin,  # noqa
                         TemplateView):
     template_name = 'projects/projects_edit.html'
     model = Project
-    minor_models = ProjectDocs
+    minor_models = (ProjectDocs,)
     form_class = ProjectCreate
-    minor_form_classes = ProjectDocsCreate
+    minor_form_classes = (ProjectDocsCreate,)
     success_redirect = reverse_lazy('projects_list')
     success_message = "%(title)s was created successfully"
+    file_attrs = {ProjectDocs: {'action': ProjectDocs.objects.bulk_create,
+                                'field': 'file'}}

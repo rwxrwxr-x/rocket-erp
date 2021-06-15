@@ -28,7 +28,6 @@ class ProjectDocsCreate(ModelForm): # noqa
             )
         }
 
-
 class ProjectUpdate(ProjectCreate): # noqa
     def __init__(self, *args, **kwargs): # noqa
         super().__init__(*args, **kwargs)
