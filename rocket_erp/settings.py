@@ -31,10 +31,10 @@ INSTALLED_APPS = [
     "rest_framework_jwt",
     "bootstrap4",
     # apps
-    "rocket_erp.apps.core",
-    "rocket_erp.apps.accounts",
-    "rocket_erp.apps.api",
-    "rocket_erp.apps.projects"
+    "core",
+    "accounts",
+    "projects",
+    "api"
 ]
 
 MIDDLEWARE = [
@@ -42,7 +42,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     # 3d party apps
-    "crum.CurrentRequestUserMiddleware"
+    "crum.CurrentRequestUserMiddleware",
+    # apps
+    "rocket_erp.middleware.me",
 ]
 
 ROOT_URLCONF = "rocket_erp.urls"
@@ -51,7 +53,8 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(SETTINGS, 'templates')
+            #os.path.join(SETTINGS, 'templates')
+            os.path.join(BASE_DIR, 'frontend/html')
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -144,9 +147,14 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+# STATIC_URL = "/static/"
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, "rocket_erp", "static"),)
+
 STATIC_URL = "/static/"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "rocket_erp", "static"),)
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "frontend/static")]
+
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
