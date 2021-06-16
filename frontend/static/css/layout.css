@@ -1,0 +1,78 @@
+/* Layouts and grids without any styles */
+:root {
+    --max-content-width: 1000px;
+    --normal-content-width: 800px;
+}
+
+.menu {
+    display: grid;
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    height: 90px;
+    align-items: center;
+}
+
+    .menu-full {
+        grid-template-columns: 230px auto 270px;
+        position: relative;
+    }
+
+        .menu-left {
+            text-align: left;
+            transition: margin-left .3s ease;
+        }
+
+        @media only screen and (max-width : 570px) {
+            .menu-left {
+                flex-grow: 2;
+            }
+
+            .menu-center {
+                order: 3;
+                flex-grow: 2;
+                display: none;
+            }
+
+            .mobile-menu-opened .menu-center {
+                display: block;
+                position: absolute;
+                left: 20px;
+                right: 20px;
+                top: 100%;
+                z-index: 3;
+            }
+        }
+
+        .menu-center {
+            text-align: left;
+        }
+
+        .menu-right {
+            text-align: right;
+        }
+
+        @media only screen and (max-width : 570px) {
+            .menu-full {
+                grid-template-columns: none;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+        }
+
+    .menu-simplified {
+        grid-template-columns: auto;
+        justify-content: center;
+    }
+
+.content {
+    margin: 0 auto;
+    max-width: var(--normal-content-width);
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: var(--max-content-width);
+}

@@ -7,7 +7,7 @@ from .env import env
 from .env import root
 from .env import settings
 
-BASE_DIR = root()
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SETTINGS = settings()
 
 SECRET_KEY = env("SECRET_KEY")
@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     "core",
     "accounts",
     "projects",
-    "api"
+    "api",
+    "webpack_loader",
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,19 @@ LOGIN_VIA_EMAIL = True
 LOGIN_URL = "accounts:login"
 USE_REMEMBER_ME = True
 SIGN_UP_FIELDS = ["email", "password1", "password2"]
+
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "CACHE": not DEBUG,
+        "BUNDLE_DIR_NAME": "/dist/",  # must end with slash
+        "STATS_FILE": os.path.join(BASE_DIR, "frontend/webpack-stats.json"),
+        "POLL_INTERVAL": 0.1,
+        "TIMEOUT": None,
+        "IGNORE": [r".+\.hot-update.js", r".+\.map"],
+        "LOADER_CLASS": "webpack_loader.loader.WebpackLoader",
+    }
+}
+
+if DEBUG:
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE

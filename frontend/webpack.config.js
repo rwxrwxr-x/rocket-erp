@@ -11,8 +11,8 @@ module.exports = {
     context: __dirname,
     entry: path.join(__dirname, "static/js/main.js"),
     output: {
-        path: path.join(__dirname, "static/dist"),
-        publicPath: "/static/dist",
+        path: path.join(__dirname, "static/dist/"),
+        publicPath: "/static/dist/",
         filename: mode === "production" ? "[name].js": "[name].js",
         libraryTarget: "var",
         library: "Rocket",
@@ -23,9 +23,9 @@ module.exports = {
             filename: "webpack-stats.json",  
         }),
         new MiniCssExtractPlugin({
-            filename: mode === "production" ? "[name].css": "[name].css",
+            filename: mode === "production" ? "[name]-[hash].css": "[name].css",
             chunkFilename: "[id].css",
-            ignoreOrder: false,
+            ignoreOrder: false, // Enable to remove warnings about conflicting order
         }),
         new CleanWebpackPlugin(),
         new VueLoaderPlugin(),

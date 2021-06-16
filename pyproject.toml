@@ -7,7 +7,6 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = "^3.2.3"
 python-environ = "^0.4.54"
 django-environ = "^0.4.5"
 djangorestframework = "^3.12.4"
@@ -22,6 +21,9 @@ flake8-pytest-style = "^1.4.2"
 flake8-codes = "^0.1.1"
 flake8-print = "^4.0.0"
 django-crum = "^0.7.9"
+django-debug-toolbar = "^3.2.1"
+Django = "^3.2.4"
+django-webpack-loader = "0.7.0"
 
 [tool.poetry.dev-dependencies]
 
