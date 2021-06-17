@@ -45,7 +45,6 @@ MIDDLEWARE = [
     # 3d party apps
     "crum.CurrentRequestUserMiddleware",
     # apps
-    "rocket_erp.middleware.me",
 ]
 
 ROOT_URLCONF = "rocket_erp.urls"

@@ -13,12 +13,12 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import DetailView
 from django.views.generic import FormView
@@ -46,7 +46,7 @@ class GuestOnlyView(View):
 class LogInView(GuestOnlyView, FormView):
     """Generic login for users."""
 
-    template_name = "accounts/login.html"
+    template_name = "auth/login.html"
 
     @staticmethod
     def get_form_class(**kwargs) -> Optional[Type[SingInViaEmailForm]]:
@@ -55,29 +55,39 @@ class LogInView(GuestOnlyView, FormView):
 
         :return: SignIn
         """
-        if settings.LOGIN_VIA_EMAIL:
-            return SingInViaEmailForm
+        return SingInViaEmailForm
 
     @method_decorator(sensitive_post_parameters("password"))
-    @method_decorator(csrf_protect)
     @method_decorator(never_cache)
+    @method_decorator(ensure_csrf_cookie)
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        print(self.request.POST)
+        print(form)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
     def dispatch(self, request: HttpRequest, *args, **kwargs)\
             -> Union[HttpResponseNotAllowed, HttpResponseRedirect]:
         """Override of View dispatch method."""
+        print('dispatch')
         request.session.set_test_cookie()
         return super().dispatch(request, *args, **kwargs)
-
+    def form_invalid(self, form):
+        return super().form_invalid(form)
     def form_valid(self, form: Form) -> HttpResponseRedirect:
         """Override of View form_valid method."""
+        print('formvalid')
         request: HttpRequest = self.request
-
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
 
         if settings.USE_REMEMBER_ME:
             if not form.cleaned_data["remember_me"]:
                 request.session.set_expiry(0)
-
+        print(form.user_cache)
         login(request, form.user_cache)
 
         redirect_to = request.POST.get(
