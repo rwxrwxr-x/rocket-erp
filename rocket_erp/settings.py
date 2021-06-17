@@ -12,7 +12,7 @@ SETTINGS = settings()
 
 SECRET_KEY = env("SECRET_KEY")
 
-DEBUG = env("DEBUG")
+DEBUG = True
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 AUTH_USER_MODEL = "accounts.Account"
@@ -182,6 +182,6 @@ WEBPACK_LOADER = {
     }
 }
 
-if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
+# if DEBUG:
+#     INSTALLED_APPS += ['debug_toolbar']
+#     MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE

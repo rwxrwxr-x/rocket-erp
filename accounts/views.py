@@ -62,8 +62,6 @@ class LogInView(GuestOnlyView, FormView):
     @method_decorator(ensure_csrf_cookie)
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        print(self.request.POST)
-        print(form)
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -72,22 +70,20 @@ class LogInView(GuestOnlyView, FormView):
     def dispatch(self, request: HttpRequest, *args, **kwargs)\
             -> Union[HttpResponseNotAllowed, HttpResponseRedirect]:
         """Override of View dispatch method."""
-        print('dispatch')
         request.session.set_test_cookie()
         return super().dispatch(request, *args, **kwargs)
+
     def form_invalid(self, form):
-        return super().form_invalid(form)
+        context = {'message': 'wrong email or password'}
+        return self.render_to_response(context)
+
     def form_valid(self, form: Form) -> HttpResponseRedirect:
         """Override of View form_valid method."""
-        print('formvalid')
+
         request: HttpRequest = self.request
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
 
-        if settings.USE_REMEMBER_ME:
-            if not form.cleaned_data["remember_me"]:
-                request.session.set_expiry(0)
-        print(form.user_cache)
         login(request, form.user_cache)
 
         redirect_to = request.POST.get(

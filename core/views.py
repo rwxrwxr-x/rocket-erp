@@ -24,7 +24,7 @@ from core.utils import get_model
 
 def home_page(request: HttpRequest) -> HttpResponse:
     """Home page view."""
-    template = loader.get_template("core/home.html")
+    template = loader.get_template("layout.html")
     context: dict[Any, Any] = {}
     return HttpResponse(template.render(context, request))
 
