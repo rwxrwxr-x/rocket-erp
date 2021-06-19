@@ -1,67 +1,41 @@
 {
-    "name": "frontend",
-    "version": "1.0.0",
-    "scripts": {
-        "build": "webpack",
-        "prewatch": "npm ci",
-        "watch": "NODE_ENV=development npm run build -- --watch"
-    },
-    "license": "ISC",
-    "devDependencies": {
-        "autoprefixer": "^10.2.5",
-        "clean-webpack-plugin": "^3.0.0",
-        "css-loader": "^3.5.3",
-        "cssnano": "^5.0.6",
-        "file-loader": "^6.0.0",
-        "husky": "^6.0.0",
-        "lint-staged": "^10.2.2",
-        "mini-css-extract-plugin": "^1.4.0",
-        "postcss-import": "^12.0.1",
-        "postcss-loader": "^3.0.0",
-        "postcss-preset-env": "^6.7.0",
-        "prettier": "^2.0.5",
-        "stylelint": "^13.13.1",
-        "vue-hot-reload-api": "^2.3.4",
-        "vue-loader": "^15.9.2",
-        "vue-template-compiler": "^2.6.11",
-        "webpack": "^5.30.0",
-        "webpack-bundle-tracker": "^0.4.3",
-        "webpack-cli": "^4.6.0"
-    },
-    "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.13.0",
-        "@stripe/stripe-js": "^1.11.0",
-        "easymde": "^2.11.0",
-        "inline-attachment": "^2.0.3",
-        "lightense-images": "^1.0.9",
-        "mapbox-gl": "^1.10.1",
-        "normalize.css": "^8.0.1",
-        "twemoji": "^13.0.2",
-        "vue": "^2.6.11",
-        "vue-cookies": "^1.7.4",
-        "vue-mapbox": "^0.4.1"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "{*.js,*.vue}": [
-            "prettier --write"
-        ]
-    },
-    "prettier": {
-        "printWidth": 120
-    },
-    "browserslist": [
-        "last 2 versions",
-        "not dead",
-        "not ie 11",
-        "not ie_mob 11",
-        "not op_mini all",
-        "not op_mob > 0",
-        "not and_qq > 0",
-        "not android > 0"
-    ]
+  "name": "vue-black-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A sample admin dashboard based on black dashboard UI template",
+  "author": "cristian.jora <joracristi@gmail.com>",
+  "scripts": {
+    "serve": "vue-cli-service serve --open",
+    "build": "vue-cli-service build",
+    "e2e": "node test/e2e/runner.js",
+    "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve --open",
+    "lint-fix": "vue-cli-service lint --fix"
+  },
+  "dependencies": {
+    "chart.js": "^2.9.3",
+    "nuxt": "^2.15.7",
+    "register-service-worker": "^1.7.1",
+    "vue": "^2.6.11",
+    "vue-chartjs": "^3.5.0",
+    "vue-i18n": "^8.18.2",
+    "vue-router": "^3.3.4",
+    "vue-router-prefetch": "^1.6.0",
+    "vue2-transitions": "^0.3.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.4.6",
+    "@vue/cli-plugin-eslint": "^4.4.6",
+    "@vue/cli-plugin-pwa": "^4.4.6",
+    "@vue/cli-service": "^4.4.6",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2",
+    "vue-cli-plugin-i18n": "^1.0.1",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ]
 }
