@@ -30,6 +30,7 @@ poetry shell && poetry install
 chmod +x ./manage.sh
 ```
 После чего применяем <code>./manage.sh deploy</code> и следуем диалогу.
+<img src='docs/media/demo.gif'>
 
 
 **Запуск сервера**
