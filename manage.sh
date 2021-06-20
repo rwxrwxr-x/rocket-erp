@@ -42,13 +42,14 @@ pre-commit() {
   : pre-commit
   cd "${PROJECT_DIR}/${FRONTEND_APP}/${SUB_REPO}" || return
   _m "Copying the modified and untracked files from the submodule"
-  rsync -R "$(git ls-files . -mo --full-name)" ../
+  rsync -R $(git ls-files . -mo --full-name) ../
   git reset --hard HEAD
   _m "Submodule reset"
   cd ..
   git add ./*
   _m 1
 }
+
 deploy() {
   : deploy project for work, dialogue
   if [ -z "$BACKEND_APP" ] || [ -z "$FRONTEND_APP" ]; then
@@ -61,14 +62,14 @@ deploy() {
   f | frontend)
       _m "Copying current working files to submodule directory"
       cd "${PROJECT_DIR}/${FRONTEND_APP}" || return
-      if [[ -n $(ls | egrep -v $SUB_REPO ) ]]; then _m 0 "the ${FRONTEND_APP} is empty, it is probably already deployed";return;fi
+      if [[ -z $(ls | egrep -v $SUB_REPO ) ]]; then _m 0 "the ${FRONTEND_APP} is empty, it is probably already deployed";return;fi
       rsync -R $(git ls-files . | egrep -v $SUB_REPO) $SUB_REPO/
       vared -p "Do you want to install node packages? Default y/n: " -c npm
       case "$state" in y | Y) npm install;;
-                       n | N) return;;
-                       *) npm install;;
+                       n | N) _m "You need use './manage.sh -f install' for install node packages" return;;
+                       *);;
       esac
-      rm -rf "$(ls | egrep -v $SUB_REPO)"
+      rm -rf $(ls | egrep -v $SUB_REPO)
       _m 1;;
   b | backend)
     vared -p 'What would you like to do?([p]ostgres/[s]qlite): ' -c db
@@ -80,7 +81,7 @@ deploy() {
       _env SQL_PASSWORD 123 $env
       _env SQL_HOST 0.0.0.0 $env
       _env SQL_PORT 5432 $env
-      _env DJANGO_SECRET_KEY "$(shuf -zer -n20 {A..Z}{a..z}{0..9})" $env
+      _env DJANGO_SECRET_KEY "guwf#FNJfm23if(*FJEWHn@*F#NF9#F283" $env
       _env DEBUG True $env
       postgres
       ;;s | sqlite)
@@ -95,6 +96,7 @@ deploy() {
       ;;*) echo "DB isn't selected";return;;
     esac
     sleep 5
+    rm .env.bu
     -b makemigrations
     -b migrate
       ;; *) echo "DB isn't selected";return;;
