@@ -72,11 +72,13 @@ deploy () {
       # shellcheck disable=SC2046
       # shellcheck disable=SC2196
       rsync -R $(git ls-files . | egrep -v $SUB_REPO) $SUB_REPO/
+      npm install
       # shellcheck disable=SC2046
       # shellcheck disable=SC2196
       # shellcheck disable=SC2012
       rm -rf $(ls | egrep -v $SUB_REPO)
       _m 1
+
 
   elif [ "$1" = "backend" ]; then
       python manage.py makemigrations
@@ -96,6 +98,14 @@ deploy () {
     python manage.py $@
 }
 
+front (){
+    : Manage package.json scripts
+    cd $PROJECT_DIR/$FRONTEND_APP/$SUB_REPO
+    npm run $@
+}
+
+
+
 if [ -z "$1" ]; then # prints public command description, if this file called without args
     echo "\e[36m";typeset -f | grep -w '()' -A1 | grep -v "^--" | sed 's/[(){}]//g' |
     sed 's/[[:space:]]*:[[:space:]]*/:/g' | sed 'N;s/\n/ /' | awk '!/help|_/ {print $0}';echo "\e[0m"
@@ -103,4 +113,4 @@ if [ -z "$1" ]; then # prints public command description, if this file called wi
 fi
 
 export PROJECT_DIR=$PWD
-"$@"
+#"$@"
