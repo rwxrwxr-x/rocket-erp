@@ -28,10 +28,9 @@ cd rocket-erp
 python3 -m pip install --user poetry
 poetry shell && poetry install
 chmod +x ./manage.sh
-./manage.sh postgres
-./manage.sh deploy backend
-./manage.sh deploy frontend
 ```
+После чего применяем <code>./manage.sh deploy</code> и следуем диалогу.
+
 
 **Запуск сервера**
 

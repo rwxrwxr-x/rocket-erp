@@ -1,116 +1,124 @@
 #!/bin/zsh
-
+PROJECT_DIR=""
 SUB_REPO="nuxt-black-dashboard"
 FRONTEND_APP="frontend"
-PROJECT_DIR=""
 BACKEND_APP='backend'
-DB_CONTAINER="${BACKEND_APP}_postgres"
-DB_NAME=$BACKEND_APP
-DB_USER="postgres"
-DB_PASSWORD="123"
 
-_m (){ # colored message function, using variants: _m $code $message | _m $message | $code. Codes: 0=err, 1=success
-  if [ "$1" = 0 ];then [[ -z "$2" ]]&&echo "\e[31mSomething went wrong ¯\_(ツ)_/¯\e[0m"||echo "\e[31m$2\e[0m"
-  elif [ "$1" = 1 ];then [[ -z "$2" ]]&&echo "\e[32mTask completed\e[0m"||echo "\e[32m$2\e[0m"
-  elif [ "$1" != 0 ] && [ "$1" != 1 ];then echo "\e[36m$1\e[0m";fi
+_m() { # colored message function, using variants: _m $code $message | _m $message | $code. Codes: 0=err, 1=success
+  if [ "$1" = 0 ]; then
+    [[ -z "$2" ]] && echo "\e[91mSomething went wrong ¯\_(ツ)_/¯\e[0m" || echo -"$3" "\e[91m$2\e[0m"
+  elif [ "$1" = 1 ]; then
+    [[ -z "$2" ]] && echo "\e[92mTask completed\e[0m" || echo -"$3" "\e[92m$2\e[0m"
+  elif [ "$1" != 0 ] && [ "$1" != 1 ]; then echo -"$2" "\e[94m$1\e[0m"; fi
 }
 
-postgres (){
-    : run dev database container, access with
-    if [ "$1" = "stop" ]; then
-        # shellcheck disable=SC2216
-        # shellcheck disable=SC2016
-        docker stop "$DB_DB_CONTAINER" | _m "${DB_CONTAINER} down"
-        return
-    fi
-    # shellcheck disable=SC2086
-    docker stop $DB || true
-    if [[ $# -le 3 ]];then
-        _m 0 "Arguments required: name, user, password, db_name"
-    exit 2
-    else
-        _m "Trying start container..."
-    fi
-    response=$(docker run --rm --detach --name=$DB_CONTAINER \
-        --env POSTGRES_USER=$DB_USER \
-        --env POSTGRES_PASSWORD=$DB_PASSWORD \
-        --env POSTGRES_DB=$DB_NAME\
-        --publish 5432:5432 postgres>/dev/null)
-    [[ -z $response ]] || exit 2
+_env() { # sets and get environment
+  if [[ $1 == "get" ]]; then
+    source "$2"
+  else
+    sed -i.bu "s/${1}=.*/${1}=${2}/" "$3";[[ ! "$4" == "m" ]] && _m "The set variable ${1} is ${2}"
+  fi
+}
+# shellcheck disable=SC2120
+postgres() {
+  : run dev database container, access with
+  if [ "$1" = "stop" ]; then
+    docker stop "$SQL_DATABASE" | _m "${SQL_DATABASE} down"
+    return
+  fi
+  [[ ! -f .env ]] && return;_env get .env
+  # shellcheck disable=SC2143
+  [[ -n $(docker ps -f name="$SQL_DATABASE" | grep -w "$SQL_DATABASE") ]] && docker stop "$SQL_DATABASE" | _m "${SQL_DATABASE} down"
+  _m "Trying to start container..."
+  response=$(docker run --rm --detach --name="$SQL_DATABASE" \
+    --env POSTGRES_USER="$SQL_USER" \
+    --env POSTGRES_PASSWORD="$SQL_PASSWORD" \
+    --env POSTGRES_DB="$SQL_DATABASE" \
+    --publish "$SQL_PORT":5432 postgres >/dev/null)
+  [[ -z $response ]] && _m 1 "${SQL_DATABASE} container is started." || exit 2
 }
 
-fprecommit () {
+pre-commit() {
   : pre-commit
-  # shellcheck disable=SC2164
-  cd "$PROJECT_DIR"/$FRONTEND_APP/$SUB_REPO
-  # shellcheck disable=SC2046
+  cd "${PROJECT_DIR}/${FRONTEND_APP}/${SUB_REPO}" || return
   _m "Copying the modified and untracked files from the submodule"
-  # shellcheck disable=SC2046
-  rsync -R $(git ls-files . -mo --full-name) ../
+  rsync -R "$(git ls-files . -mo --full-name)" ../
   git reset --hard HEAD
   _m "Submodule reset"
-  # shellcheck disable=SC2103
   cd ..
-  # shellcheck disable=SC2035
-  git add *
+  git add ./*
   _m 1
 }
-
-deploy () {
-  : deploy project for work, keys: frontend, backend
-  # shellcheck disable=SC2164
-  if [ -z $BACKEND_APP ] || [ -z $FRONTEND_APP ];then
-      _err "BACKEND_APP or FRONTEND_APP is not set!"
-      exit 2
+deploy() {
+  : deploy project for work, dialogue
+  if [ -z "$BACKEND_APP" ] || [ -z "$FRONTEND_APP" ]; then
+    _err "BACKEND_APP or FRONTEND_APP is not set!"
+    exit 2
   fi
-  # shellcheck disable=SC2164
 
-  if [ "$1" = "frontend" ]; then
+  vared -p "What would you like to do? [f]frontend, [b]ackend: " -c state
+  case "$state" in
+  f | frontend)
       _m "Copying current working files to submodule directory"
-      # shellcheck disable=SC2164
-      cd "$PROJECT_DIR"/$FRONTEND_APP
-      # shellcheck disable=SC2046
-      # shellcheck disable=SC2196
+      cd "${PROJECT_DIR}/${FRONTEND_APP}" || return
+      if [[ -n $(ls | egrep -v $SUB_REPO ) ]]; then _m 0 "the ${FRONTEND_APP} is empty, it is probably already deployed";return;fi
       rsync -R $(git ls-files . | egrep -v $SUB_REPO) $SUB_REPO/
-      npm install
-      # shellcheck disable=SC2046
-      # shellcheck disable=SC2196
-      # shellcheck disable=SC2012
-      rm -rf $(ls | egrep -v $SUB_REPO)
-      _m 1
-
-
-  elif [ "$1" = "backend" ]; then
-      python manage.py makemigrations
-      python manage.py migrate
-      if [ ! -f .env ];then
-        cp .env.template .env
-        _m 0 ".env needs to be configured"
-      fi
-  else
-        _m 0 "Parameter not specified"
-  fi
+      vared -p "Do you want to install node packages? Default y/n: " -c npm
+      case "$state" in y | Y) npm install;;
+                       n | N) return;;
+                       *) npm install;;
+      esac
+      rm -rf "$(ls | egrep -v $SUB_REPO)"
+      _m 1;;
+  b | backend)
+    vared -p 'What would you like to do?([p]ostgres/[s]qlite): ' -c db
+    env=".env";if [ ! -f .env ]; then cp .env.template .env;fi
+    case "$db" in p | postgres)
+      _env SQL_ENGINE django.db.backends.postgresql_psycopg2 $env
+      _env SQL_DATABASE backend $env
+      _env SQL_USER postgres $env
+      _env SQL_PASSWORD 123 $env
+      _env SQL_HOST 0.0.0.0 $env
+      _env SQL_PORT 5432 $env
+      _env DJANGO_SECRET_KEY "$(shuf -zer -n20 {A..Z}{a..z}{0..9})" $env
+      _env DEBUG True $env
+      postgres
+      ;;s | sqlite)
+      _env SQL_ENGINE django.db.backends.sqlite3 $env
+      _env SQL_DATABASE db.sqlite3 $env
+      _env SQL_USER " " $env
+      _env SQL_PASSWORD " " $env
+      _env SQL_HOST " " $env
+      _env SQL_PORT " " $env
+      _env DJANGO_SECRET_KEY 123 $env
+      _env DEBUG True $env
+      ;;*) echo "DB isn't selected";return;;
+    esac
+    sleep 5
+    -b makemigrations
+    -b migrate
+      ;; *) echo "DB isn't selected";return;;
+esac
 }
 
--x (){
-    : Running backend cli commands
-    # shellcheck disable=SC2068
-    python manage.py $@
+-b() {
+  : Running backend cli commands
+  python manage.py "$@"
 }
 
-front (){
-    : Manage package.json scripts
-    cd $PROJECT_DIR/$FRONTEND_APP/$SUB_REPO
-    npm run $@
+-f() {
+  : Manage package.json scripts
+  cd "${PROJECT_DIR}/${FRONTEND_APP}/${SUB_REPO}" || return
+  npm run "$@"
 }
-
-
 
 if [ -z "$1" ]; then # prints public command description, if this file called without args
-    echo "\e[36m";typeset -f | grep -w '()' -A1 | grep -v "^--" | sed 's/[(){}]//g' |
-    sed 's/[[:space:]]*:[[:space:]]*/:/g' | sed 'N;s/\n/ /' | awk '!/help|_/ {print $0}';echo "\e[0m"
-    exit 0
+  echo "\e[36m"
+  typeset -f | grep -w '()' -A1 | grep -v "^--" | sed 's/[(){}]//g' |
+    sed 's/[[:space:]]*:[[:space:]]*/:/g' | sed 'N;s/\n/ /' | awk '!/help|_/ {print $0}'
+  echo "\e[0m"
+  exit 0
 fi
 
 export PROJECT_DIR=$PWD
-#"$@"
+"$@"
