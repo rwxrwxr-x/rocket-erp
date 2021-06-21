@@ -42,7 +42,7 @@ pre-commit() {
   : pre-commit
   cd "${PROJECT_DIR}/${FRONTEND_APP}/${SUB_REPO}" || return
   _m "Copying the modified and untracked files from the submodule"
-  rsync -R $(git ls-files . -mo --full-name) ../
+  rsync -R $(git ls-files . -mo --full-name | egrep -v "node_modules" | egrep -v ".nuxt") ../
   git reset --hard HEAD
   _m "Submodule reset"
   cd ..
@@ -66,7 +66,7 @@ deploy() {
       rsync -R $(git ls-files . | egrep -v $SUB_REPO) $SUB_REPO/
       vared -p "Do you want to install node packages? Default y/n: " -c npm
       case "$state" in y | Y) npm install;;
-                       n | N) _m "You need use './manage.sh -f install' for install node packages" return;;
+                       n | N) _m "You need use './manage.sh -f install' for install node packages"; return;;
                        *);;
       esac
       rm -rf $(ls | egrep -v $SUB_REPO)

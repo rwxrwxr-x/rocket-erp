@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -37,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
     'drf_yasg',
     'backend.api',
     'backend.accounts'
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -89,10 +92,6 @@ DATABASES = {
     }
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ['Token', 'JWT'],
-    'ROTATE_REFRESH_TOKENS': True,
-}
 
 SWAGGER_SETTINGS = {
     'SHOW_REQUEST_HEADERS': True,
@@ -100,11 +99,11 @@ SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'apiKey': {
             'type': 'apiKey',
-            'name': 'Authorization',
+            'name': 'Bearer',
             'in': 'header',
             'description': (
                 'Для авторизации необходимо добавить заголовок:\n'
-                '`Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`'
+                '`Bearer: 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`'
             )
         }
     },
@@ -130,14 +129,33 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+         # 'rest_framework.authentication.TokenAuthentication',
+         # 'rest_framework.authentication.SessionAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
         "rest_framework.permissions.AllowAny"
     )
+}
+
+JWT_ALGORITHM =  'HS256'
+# jwt settings
+SIMPLE_JWT_SIGNING_KEY = "b=72^ado*%1(v3r7rga9ch)03xr=d*f)lroz94kosf!61((9=i"
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ALGORITHM': 'HS256',
+    'SINGING_KEY': SIMPLE_JWT_SIGNING_KEY,
+    'AUTH_HEADER_TYPES': ('JWT',),
+    # 'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+
+
+
+
+
 }
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -152,6 +170,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:3000',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
