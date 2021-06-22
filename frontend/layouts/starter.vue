@@ -35,7 +35,7 @@
   }
 
   import ContentFooter from '@/components/Layout/starter/SampleFooter.vue';
-  import Content from '@/components/Layout/starter/Content.vue';
+  import Content from '@/components/Layout/Content.vue';
   import { SlideYDownTransition } from 'vue2-transitions';
 
   export default {

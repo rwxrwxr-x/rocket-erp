@@ -7,12 +7,12 @@
               <div class="text-center text-muted mb-4">
                 <small>Sign in</small>
               </div>
-              <form class="needs-validation" @submit="handleSubmit">
+              <form class="needs-validation" @submit.prevent="handleSubmit">
                 <base-input
                   name="Email"
                   prepend-icon="ni ni-email-83"
                   placeholder="Email"
-                  v-model="email"
+                  v-model="form.email"
                 >
                 </base-input>
 
@@ -22,7 +22,7 @@
                   prepend-icon="ni ni-lock-circle-open"
                   type="password"
                   placeholder="Password"
-                  v-model="password"
+                  v-model="form.password"
                 >
                 </base-input>
                 <div class="text-center">
@@ -46,41 +46,25 @@
   </template>
 
 <script>
-// import { apiReq } from '~/plugins/misc-functions'
-const Cookie = require('js-cookie')
+
 export default {
-  middleware: "noauth",
   data: () => ({
-    email: "",
-    password: "",
+    form: {
+          email: "",
+          password: "",
+    },
     error: null
   }),
   methods: {
-    async handleSubmit(evt) {
-      evt.preventDefault()
-      let res = await this.$axios.$post(`http://localhost:8000/api/v1/auth/jwt`, { email: this.email, password: this.password});
-      this.$store.commit('setAuth', { access: res.access, refresh: res.refresh })
-      Cookie.set('access', res.access)
-      this.$router.push('/')
-      // 			evt.preventDefault()
-			// var loginReq = await apiReq(this, 'api/v1/auth/jwt', { email: this.email,
-			// 											password: this.password });
-			// if (loginReq.status === 'error') {
-			// 	if (loginReq.response.message != null && loginReq.response.message != '') {
-			// 		this.errorMessage = loginReq.response.message
-			// 	}
-			// 	else {
-			// 		this.errorMessage = 'Login failed. Please try again.'
-			// 	}
-			// 	this.showAlert = true
-			// }
-			// else if (loginReq.status === 200) {
-			// 	await this.$store.dispatch('setState', { email: loginReq.response.email,
-			// 										logged_in: true,
-			// 										access: loginReq.response.access })
-			// 	await this.$axios.setToken(loginReq.response.access)
-			// 	this.$router.push('/')
-			// }
+    async handleSubmit() {
+      try {
+        await this.$auth.login({ data: this.form})
+        if(this.$auth.hasScope('general')) {
+          this.$nuxt.$router.push('/')
+        }
+      } catch (e) {
+        this.error = 'Login failed'
+      }
     }
   }
 }

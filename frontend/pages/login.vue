@@ -10,7 +10,7 @@ import LoginForm from "~/components/auth/LoginForm";
 
 export default {
   layout: "starter",
-  components: { LoginForm},
-  middleware: 'noauth',
+  components: { LoginForm },
+  middleware: 'auth',
 };
 </script>
