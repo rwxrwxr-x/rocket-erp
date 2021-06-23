@@ -139,9 +139,6 @@
           docClasses.add('perfect-scrollbar-off');
         }
       },
-      initSideBar() {
-
-      }
     },
     mounted() {
       this.initScrollbar();

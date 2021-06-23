@@ -3,6 +3,8 @@ PROJECT_DIR=""
 SUB_REPO="nuxt-black-dashboard"
 FRONTEND_APP="frontend"
 BACKEND_APP='backend'
+BPM=poetry
+FPM=npm
 
 _m() { # colored message function, using variants: _m $code $message | _m $message | $code. Codes: 0=err, 1=success
   if [ "$1" = 0 ]; then
@@ -104,12 +106,18 @@ esac
 }
 
 -b() {
-  : Running backend cli commands
-  python manage.py "$@"
+  : Running backend cli commands or add package
+  if [[ $1 = "add" ]]; then
+      $bpm add "${@:2}"
+  else
+    python manage.py "$@"
+  fi
 }
 
 -f() {
   : Manage package.json scripts
+  if [[ $1 = "add" ]];
+    $FPM install $@
   cd "${PROJECT_DIR}/${FRONTEND_APP}/${SUB_REPO}" || return
   npm run "$@"
 }

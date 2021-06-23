@@ -22,19 +22,20 @@ from rest_framework.permissions import AllowAny
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
-        default_version='v1',
-
+        title="RocketERP API",
+        default_version="v1",
     ),
     public=True,
     permission_classes=(AllowAny,),
 )
 
 urlpatterns = [
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
-         name='schema-swagger-ui'),
-    path(r'redoc/', schema_view.with_ui('redoc', cache_timeout=0),
-         name='schema-redoc'),
-    re_path(r'^api/v1/auth/', include('backend.accounts.urls'))
-
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path(r"redoc/", schema_view.with_ui("redoc", cache_timeout=0),
+         name="schema-redoc"),
+    re_path(r"^api/v1/auth/", include("backend.accounts.urls")),
 ]

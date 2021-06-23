@@ -60,7 +60,7 @@ export default {
       try {
         await this.$auth.login({ data: this.form})
         if(this.$auth.hasScope('general')) {
-          this.$nuxt.$router.push('/')
+          await this.$nuxt.$router.push('/')
         }
       } catch (e) {
         this.error = 'Login failed'

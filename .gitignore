@@ -35,7 +35,7 @@ MANIFEST
 
 # IDE
 .idea/
-
+frontend/static/sw.js
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

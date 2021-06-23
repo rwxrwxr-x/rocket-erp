@@ -1,8 +1,7 @@
 {
-  "name": "nuxt-black-dashboard",
+  "name": "rocket-erp-fronend",
   "version": "1.0.0",
-  "description": "Nuxt Black Dashboard",
-  "author": "creativetim",
+  "description": "RocketERP-frontend",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -32,6 +31,7 @@
     "vue2-transitions": "^0.2.3"
   },
   "devDependencies": {
+    "@nuxt/types": "^2.15.7",
     "babel-plugin-component": "^1.1.1",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.3.1"

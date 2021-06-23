@@ -1,33 +1,31 @@
 import Jsona from 'jsona';
-const jsona = new Jsona()
-// const url = '127.0.0.1:8000'
+const jsona = new Jsona();
+import auth_routes  from './api';
 
-function get(params, axios, token) {
-    return axios.get( `/api/v1/auth/profile/`, {headers: {
+const route = auth_routes.profile;
+const get = (params, axios, token) => {
+    return axios.get( route, {headers: {
         Authorization: token
         }})
         .then(response => {
-            return response.data
-            //     list: jsona.deserialize(response.data),
-            //     // meta: response.data.meta
-            // }k: response.data
-        })
-}
+            return response.data;
+        });
+};
 
-function update(profile, axios, token) {
+const update = (profile, axios, token) => {
     const payload = jsona.serialize({
         stuff: profile,
         includeNames: []
     });
 
-    return axios.patch(`${url}/api/v1/auth/profile`, {headers: {
+    return axios.patch(route, {headers: {
         Authorization: token}})
         .then(response => {
-            return jsona.deserialize(response.data)
-        })
-}
+            return jsona.deserialize(response.data);
+        });
+};
 
 export default {
     get,
     update
-}
+};

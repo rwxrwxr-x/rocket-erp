@@ -19,7 +19,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: 'Nuxt Black Dashboard',
+    title: 'RocketERP',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -54,8 +54,8 @@ export default {
   */
 
   plugins: [
-    `~/plugins/dashboard-plugin.js`,
-    `~/plugins/axios.js`
+    '~/plugins/dashboard-plugin.js',
+    '~/plugins/axios.js'
   ],
 
   /*
