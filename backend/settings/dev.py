@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware'
 ]
 
-ROOT_URLCONF = 'backend.urls'
+ROOT_URLCONF = 'backend.settings.urls'
 STATICFILES_DIRS = [
     BASE_DIR / "backend/static"]
 TEMPLATES = [
@@ -78,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "backend.wsgi.application"
+WSGI_APPLICATION = "backend.settings.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -93,8 +93,14 @@ DATABASES = {
         "HOST": config("SQL_HOST"),
         "PORT": config("SQL_PORT", cast=int),
     }
-}
-
+} if config('SQL_ENGINE') == 'django.db.backends.postgresql_psycopg2' \
+    else \
+    {
+        "default": {
+            "ENGINE": config("SQL_ENGINE"),
+            "NAME": config("SQL_DATABASE")
+        }
+    }
 
 SWAGGER_SETTINGS = {
     "SHOW_REQUEST_HEADERS": True,
@@ -160,8 +166,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
