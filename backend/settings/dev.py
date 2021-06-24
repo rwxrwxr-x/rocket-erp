@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'backend.api',
-    'backend.accounts'
+    'backend.accounts',
+    'backend.project',
+    'backend.customer',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'backend.urls'
-
+STATICFILES_DIRS = [
+    BASE_DIR / "backend/static"]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -107,7 +110,6 @@ SWAGGER_SETTINGS = {
             ),
         }
     },
-    "DEFAULT_AUTO_SCHEMA_CLASS": "backend.utils.inspectors.SwaggerAutoSchema",
     "DEFAULT_FIELD_INSPECTORS": [
         "drf_yasg.inspectors.CamelCaseJSONFilter",
         "drf_yasg.inspectors.ReferencingSerializerInspector",
@@ -169,7 +171,7 @@ CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:3000",)
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "UTC"
 
