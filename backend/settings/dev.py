@@ -108,11 +108,11 @@ SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "apiKey": {
             "type": "apiKey",
-            "name": "Bearer",
+            "name": "Authorization",
             "in": "header",
             "description": (
                 "Для авторизации необходимо добавить заголовок:\n"
-                "JWT 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`"
+                "JWT 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"
             ),
         }
     },
