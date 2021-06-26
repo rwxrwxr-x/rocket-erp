@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Project, ProjectCurators, ProjectConsumables, Consumables
+
+from .models import Consumables
+from .models import Project
+from .models import ProjectConsumables
+from .models import ProjectCurators
 
 
 class ProjectCuratorsAdmin(admin.TabularInline):

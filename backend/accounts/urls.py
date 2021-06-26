@@ -1,11 +1,13 @@
-from django.urls import re_path, path
 from django.contrib import admin
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-from .views import LogoutView, TestView, ProfileView
+from django.urls import path
+from django.urls import re_path
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenVerifyView
+
+from .views import LogoutView
+from .views import ProfileView
+from .views import TestView
 
 urlpatterns = [
     re_path(r"^jwt/?$", TokenObtainPairView.as_view(), name="login"),

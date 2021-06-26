@@ -1,6 +1,7 @@
 from django.db import models
-from ..customer.models import Contracts
+
 from ..accounts.models import Account
+from ..customer.models import Contracts
 
 
 # Create your models here.

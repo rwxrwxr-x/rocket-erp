@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Customer, BankDetail, Contracts
+
+from .models import BankDetail
+from .models import Contracts
+from .models import Customer
 
 
 # Register your models here.
