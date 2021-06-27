@@ -12,7 +12,14 @@ class Project(models.Model):
     contract = models.ForeignKey(Contracts,
                                  verbose_name='Договор',
                                  on_delete=models.CASCADE,
-                                 related_name='project_contracts')
+                                 related_name='projects',
+                                 related_query_name='project')
+    is_cancelled = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return f'{self.name}'
 
     class Meta:
         verbose_name = 'Проект'

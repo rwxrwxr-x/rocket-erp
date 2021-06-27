@@ -28,7 +28,7 @@ class SubViewListModelMixin(ListModelMixin):
     ListModelMixin for SubViewSet.
     """
     def list(self, request, *args, **kwargs):
-        queryset = self.get_primary_queryset(kwargs) or self.queryset
+        queryset = self.get_primary_queryset(kwargs) or self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -49,6 +49,7 @@ class SubViewSet(RetrieveModelMixin,
         return kwargs.get(self.primary_id, None)
 
     def get_primary_queryset(self, kwargs):
+        print(self.request.user.__dict__)
         primary = self.get_primary(kwargs)
         if primary:
             queryset = self.queryset.filter(**{self.primary_id: primary})
@@ -57,13 +58,13 @@ class SubViewSet(RetrieveModelMixin,
             return None
 
     def retrieve(self, request, pk=None, *args, **kwargs):
-        queryset = self.get_primary_queryset(kwargs) or self.queryset
+        queryset = self.get_primary_queryset(kwargs) or self.get_queryset()
         result = get_object_or_404(queryset, pk=pk)
-        serializer = self.serializer_class(result)
+        serializer = self.serializer_class(result, context={'request': request})
         return Response(serializer.data)
 
     def update(self, request, pk=None, *args, **kwargs):
-        queryset = self.get_primary_queryset(kwargs) or self.queryset
+        queryset = self.get_primary_queryset(kwargs) or self.get_queryset()
         serializer_instance = get_object_or_404(queryset, pk=pk)
         partial = kwargs.get('partial', None)
         serializer = self.serializer_class(

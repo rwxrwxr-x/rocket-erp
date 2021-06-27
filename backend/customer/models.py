@@ -1,7 +1,6 @@
 from django.db import models
 
 
-
 # Create your models here.
 
 class Customer(models.Model):
@@ -22,6 +21,15 @@ class Customer(models.Model):
                             max_length=20, blank=True, default='')
     address = models.TextField(verbose_name='Фактический адрес',
                                max_length=15, blank=True, default='')
+
+    @property
+    def get_contracts(self):
+        queryset = Contracts.objects.filter(
+            customer_id=self.id,
+            project__is_cancelled=False,
+            project__is_completed=False,
+        )
+        return queryset
 
     def __str__(self):
         return f'{self.name}|{self.inn}'

@@ -6,23 +6,23 @@ from .models import ProjectConsumables
 from .models import ProjectCurators
 
 
-class ProjectCuratorsAdmin(admin.TabularInline):
+class ProjectCuratorsAdmin(admin.TabularInline): # noqa
     model = ProjectCurators
     classes = ('collapse',)
     raw_id_fields = ('account',)
 
 
-class ProjectConsumablesAdmin(admin.StackedInline):
+class ProjectConsumablesAdmin(admin.StackedInline): # noqa
     model = ProjectConsumables
     raw_id_fields = ('consumable',)
 
 
 @admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(admin.ModelAdmin): # noqa
     fieldsets = (
         (None, {
             'fields': (
-                'name', 'specs', 'contract'
+                'name', 'specs', 'contract', 'is_cancelled', 'is_completed'
             )
         }),
     )
@@ -33,7 +33,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 @admin.register(Consumables)
-class ConsumablesAdmin(admin.ModelAdmin):
+class ConsumablesAdmin(admin.ModelAdmin): # noqa
     fieldsets = (
         (None, {
             'fields': (
