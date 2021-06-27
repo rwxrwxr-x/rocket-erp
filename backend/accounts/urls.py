@@ -1,5 +1,3 @@
-from django.contrib import admin
-from django.urls import path
 from django.urls import re_path
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -16,5 +14,4 @@ urlpatterns = [
     re_path(r"^jwt/test/?$", TestView.as_view()),
     re_path(r"^jwt/verify/?$", TokenVerifyView.as_view()),
     re_path(r"^profile/?$", ProfileView.as_view()),
-    path("admin", admin.site.urls),
 ]

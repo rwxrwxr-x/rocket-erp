@@ -24,7 +24,9 @@ def get_active_customers(request):
     """Get a list of customers whose projects are curated by the user."""
     query = Customer.objects.filter(
         customer_contracts__project__project_curator__account_id
-        =request.user.id)
+        =request.user.id,
+        customer_contracts__project__is_completed=False,
+        customer_contracts__project__is_cancelled=False)
     serializer = CurrentlyCustomersSerializer(query, many=True)
     return Response(serializer.data)
 

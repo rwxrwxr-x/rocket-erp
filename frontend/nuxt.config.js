@@ -76,7 +76,7 @@ export default {
     locales: [
       {
         code: 'en',
-        file: 'en.js'
+        file: 'ru.js'
       },
       {
         code: 'ru',

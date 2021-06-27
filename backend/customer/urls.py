@@ -14,5 +14,5 @@ router.register(r'^(?P<customer_id>[-\w]+)/bank', BankDetailView, 'bankdetail')
 router.register(r'^(?P<customer_id>[-\w]+)/contract', ContractViewSet, 'contract')
 urlpatterns = [
     path('', include(router.urls)),
-    re_path(r'^active/?$', get_active_customers)
+    re_path(r'active', get_active_customers)
 ]

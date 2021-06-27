@@ -13,7 +13,7 @@ export const mutations = {
 
 export const actions = {
     me({commit, dispatch}, params) {
-        const token = user_token(this.$auth);
+        const token = this.$auth.getToken('local');
         return service.get(params, this.$axios, token)
             .then((profile) => {
                 commit('SET_RESOURCE', profile.user);
@@ -32,4 +32,3 @@ export const actions = {
 export const getters = {
     me: state => state.me
 };
-

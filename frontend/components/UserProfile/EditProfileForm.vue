@@ -31,7 +31,7 @@
             type="text"
             label="Surname"
             placeholder="Last Name"
-            v-model="user.second_name"
+            v-model="user.last_name"
           >
           </base-input>
         </div>

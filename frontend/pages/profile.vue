@@ -21,7 +21,7 @@ export default {
       user: {
         type: 'profile',
         first_name: null,
-        second_name: null,
+        last_name: null,
         email: null
       }
     }
@@ -31,9 +31,8 @@ export default {
   },
   methods: {
     async getProfile() {
-      this.$store
       await this.$store.dispatch('profile/me')
-      this.user = await {...this.$store.getters["profile/me"]}
+      this.user =  {...this.$store.getters["profile/me"]}
     }
   },
 

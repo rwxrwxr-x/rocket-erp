@@ -1,8 +1,8 @@
 import Jsona from 'jsona';
 const jsona = new Jsona();
-import auth_routes  from './api';
+import routes  from './api';
 
-const route = auth_routes.profile;
+const route = '/api/v1/auth/profile/';
 const get = (params, axios, token) => {
     return axios.get( route, {headers: {
         Authorization: token

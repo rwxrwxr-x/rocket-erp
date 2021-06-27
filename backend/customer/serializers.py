@@ -50,4 +50,4 @@ class CurrentlyCustomersSerializer(CustomerSerializer):
     active_contracts = ContractSerializer(source="get_contracts", many=True)
 
     class Meta(CustomerSerializer.Meta):
-        fields = ('id', 'name', 'active_contracts')
+        fields = ('id', 'name', 'inn', 'active_contracts')

@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.urls import include
 from django.urls import path
 from django.urls import re_path
@@ -39,5 +40,6 @@ urlpatterns = [
     path(r"redoc/", schema_view.with_ui("redoc", cache_timeout=0),
          name="schema-redoc"),
     re_path(r"^api/v1/auth/", include("backend.accounts.urls")),
-    re_path(r'^api/v1/customer/', include('backend.customer.urls'))
+    re_path(r'^api/v1/customer/', include('backend.customer.urls')),
+    path("admin", admin.site.urls),
 ]
